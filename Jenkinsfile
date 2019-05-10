@@ -12,27 +12,25 @@ pipeline {
     
 	environment {
 	
-		//registry = "josephca/tempest-eclipse-tools"
+		//registry = "josephca/eclipse-codewind-tools"
     	//registryCredential = ‘dockerhub’
     
-        TEMPEST_DOCKER_CREDS = credentials('tempest-docker-creds')
-        //TEMPEST_DOCKER_USR
-        //TEMPEST_DOCKER_PWD
-        TEMPEST_IMAGE_NAME = 'tempest-eclipse-tools'
-        TEMPEST_TAG = 'latest'
+        CODEWIND_DOCKER_CREDS = credentials('codewind-docker-creds')
+        //CODEWIND_DOCKER_USR
+        //CODEWIND_DOCKER_PWD
+        CODEWIND_IMAGE_NAME = 'eclipse-codewind-tools'
+        CODEWIND_TAG = 'latest'
     }
 	
-	
-
 	stages {
 		stage('Build') {
 			steps {
 				script {
-					sh 'echo "Starting gradle build..."'
+					sh 'echo "Starting gradle build for Eclipse codewind tools..."'
 				
 					if (isUnix()) {
-						sh 'node --version'
-		        	//	dir('dev') { sh './gradlew' }
+					//	sh 'node --version'
+		        		dir('dev') { sh './gradlew' }
 		    		} 
 		    		else {
 		        		dir('dev') { bat 'gradlew.bat' }
@@ -53,7 +51,7 @@ pipeline {
 	                echo 'Uploading to dockerhub...'
 	                
 	                if (isUnix()) {
-		        		dir('dev') { sh './script/upload.sh $TEMPEST_IMAGE_NAME $TEMPEST_DOCKER_ID $TEMPEST_DOCKER_PASSWORD $GIT_COMMIT $TEMPEST_TAG false' }
+		        	//	dir('dev') { sh './script/upload.sh $CODEWIND_IMAGE_NAME $CODEWIND_DOCKER_ID $CODEWIND_DOCKER_PASSWORD $GIT_COMMIT $CODEWIND_TAG false' }
 		    		} 
 		    		else {
 		        		dir('dev') { sh 'echo "./script/upload.bat is not available yet"' }
