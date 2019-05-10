@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Copyright (c) 2018, 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v20.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+
+   	<extension
+         point="org.eclipse.ui.preferencePages">
+         
+         <page id="MicroclimateParentPage"
+         	name="%PREFS_PARENT_PAGE_NAME"
+         	class="com.ibm.microclimate.ui.internal.prefs.MicroclimatePrefsParentPage">
+         </page>
+         
+         <page id="MicroclimateConnectionsPage"
+         	name="%PREFS_CONNECTION_PAGE_NAME"
+         	category="MicroclimateParentPage"
+         	class="com.ibm.microclimate.ui.internal.prefs.MicroclimateConnectionPrefsPage">
+         </page>    
+   	</extension>
+
+	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+		<launchConfigurationTypeImage
+			id="com.ibm.microclimate.core.internal.launchConfigurationTypeImage"
+			configTypeID="com.ibm.microclimate.core.internal.launchConfigurationType"
+			icon="%DEFAULT_ICON_PATH"/>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+		<launchConfigurationTabGroup
+			id="com.ibm.microclimate.ui.internal.launchConfigTabGroup"
+			type="com.ibm.microclimate.core.internal.launchConfigurationType"
+			class="com.ibm.microclimate.ui.internal.MicroclimateLaunchConfigTabGroup"/>
+	</extension>
+
+	<!--  Extensions for Microclimate Explorer View -->
+
+	<extension point="org.eclipse.ui.views"> 
+		<category
+			id="com.ibm.microclimate.ui.views"
+			name="%MICROCLIMATE_CATEGORY_NAME"/>
+		<view
+			id="com.ibm.microclimate.ui.explorerView"
+			name="%MICROCLIMATE_VIEW_NAME"
+			category="com.ibm.microclimate.ui.views"
+			allowMultiple="false"
+			icon="%DEFAULT_ICON_PATH"
+			class="com.ibm.microclimate.ui.internal.views.MicroclimateExplorerView"/>
+	</extension>
+	
+	<extension point="org.eclipse.ui.navigator.viewer">
+		<viewerContentBinding
+			viewerId="com.ibm.microclimate.ui.explorerView">
+			<includes>
+				<contentExtension
+					isRoot="true"
+					pattern="com.ibm.microclimate.ui.navigatorContent"/>
+			</includes>
+		</viewerContentBinding>
+	</extension>
+
+	<extension point="org.eclipse.ui.navigator.navigatorContent">
+		<navigatorContent
+			name="%NAVIGATOR_CONTENT_NAME"
+			icon="%DEFAULT_ICON_PATH"
+			activeByDefault="true"
+			contentProvider="com.ibm.microclimate.ui.internal.views.MicroclimateNavigatorContentProvider"
+			labelProvider="com.ibm.microclimate.ui.internal.views.MicroclimateNavigatorLabelProvider"  
+			id="com.ibm.microclimate.ui.navigatorContent"> 
+			<enablement>
+				<or>
+					<instanceof value="org.eclipse.core.resources.IWorkspaceRoot" />
+				</or>
+			</enablement>
+			<actionProvider
+				id="com.ibm.microclimate.ui.microclimateActionProvider"
+				class="com.ibm.microclimate.ui.internal.actions.MicroclimateActionProvider">
+				<enablement>
+					<or>
+						<instanceof value="org.eclipse.core.resources.IWorkspaceRoot" />
+						<adapt type="java.util.Collection">
+							<count value="0"/>
+						</adapt>
+					</or>
+				</enablement>
+			</actionProvider>
+			<actionProvider
+				id="com.ibm.microclimate.ui.microclimateConnectionActionProvider"
+				class="com.ibm.microclimate.ui.internal.actions.MicroclimateConnectionActionProvider">
+				<enablement>
+					<or>
+						<instanceof value="com.ibm.microclimate.core.internal.connection.MicroclimateConnection" />
+					</or>
+				</enablement>
+			</actionProvider>
+			<actionProvider
+				id="com.ibm.microclimate.ui.microclimateApplicationActionProvider"
+				class="com.ibm.microclimate.ui.internal.actions.MicroclimateApplicationActionProvider">
+				<enablement>
+					<or>
+						<instanceof value="com.ibm.microclimate.core.internal.MicroclimateApplication" />
+					</or>
+				</enablement>
+			</actionProvider>
+			<actionProvider
+				id="com.ibm.microclimate.ui.logFileActionProvider"
+				class="com.ibm.microclimate.ui.internal.actions.LogFileActionProvider">
+				<enablement>
+					<or>
+						<instanceof value="com.ibm.microclimate.core.internal.MicroclimateApplication" />
+					</or>
+				</enablement>
+			</actionProvider>
+		</navigatorContent>
+	</extension>
+
+	<extension point="org.eclipse.ui.popupMenus">
+		<objectContribution
+			id="com.ibm.microclimate.ui.appObjectActions"
+			objectClass="com.ibm.microclimate.core.internal.MicroclimateApplication">
+			<action
+				id="com.ibm.microclimate.ui.containerShell"
+				enablesFor="1"
+				menubarPath="group.open"
+				label="%ACTION_CONTAINER_SHELL"
+				class="com.ibm.microclimate.ui.internal.actions.ContainerShellAction"/>
+			<action
+				id="com.ibm.microclimate.ui.openAppOverview"
+				enablesFor="1"
+				menubarPath="group.open"
+				icon="%DEFAULT_ICON_PATH"
+				label="%ACTION_OPEN_APP_OVERVIEW"
+				class="com.ibm.microclimate.ui.internal.actions.OpenAppOverviewAction"/>
+			<action
+				id="com.ibm.microclimate.ui.openApplication"
+				enablesFor="1"
+				menubarPath="group.open"
+				icon="%OPEN_BROWSER_ICON_PATH"
+				label="%ACTION_OPEN_APP"
+				class="com.ibm.microclimate.ui.internal.actions.OpenAppAction"/>
+			<action
+				id="com.ibm.microclimate.ui.importApplication"
+				enablesFor="1"
+				menubarPath="group.show"
+				icon="%IMPORT_ICON_PATH"
+				label="%ACTION_IMPORT_PROJECT"
+				class="com.ibm.microclimate.ui.internal.actions.ImportProjectAction"/>
+			<action
+				id="com.ibm.microclimate.ui.restartDebugMode"
+				enablesFor="1"
+				menubarPath="group.generate"
+				icon="%DEBUG_ICON_PATH"
+				label="%ACTION_RESTART_DEBUG_MODE"
+				class="com.ibm.microclimate.ui.internal.actions.RestartDebugModeAction"/>
+			<action
+				id="com.ibm.microclimate.ui.restartRunMode"
+				enablesFor="1"
+				menubarPath="group.generate"
+				icon="%RUN_ICON_PATH"
+				label="%ACTION_RESTART_RUN_MODE"
+				class="com.ibm.microclimate.ui.internal.actions.RestartRunModeAction"/>
+			<action
+				id="com.ibm.microclimate.ui.enableDisableAutoBuild"
+				enablesFor="1"
+				menubarPath="group.build"
+				label="%ACTION_ENABLE_DISABLE_AUTO_BUILD"
+				class="com.ibm.microclimate.ui.internal.actions.EnableDisableAutoBuildAction"/>
+			<action
+				id="com.ibm.microclimate.ui.buildApplication"
+				enablesFor="1"
+				menubarPath="group.build"
+				icon="%BUILD_ICON_PATH"
+				label="%ACTION_START_BUILD"
+				class="com.ibm.microclimate.ui.internal.actions.StartBuildAction"/>
+			<action
+				id="com.ibm.microclimate.ui.refreshApplication"
+				enablesFor="1"
+				menubarPath="group.additions"
+				icon="%REFRESH_ICON_PATH"
+				label="%ACTION_REFRESH"
+				class="com.ibm.microclimate.ui.internal.actions.RefreshAction"/>
+		</objectContribution>
+		<objectContribution
+			id="com.ibm.microclimate.ui.appObjectActions"
+			objectClass="com.ibm.microclimate.core.internal.connection.MicroclimateConnection">
+			<action
+				id="com.ibm.microclimate.ui.refreshConnection"
+				enablesFor="1"
+				menubarPath="group.additions"
+				icon="%REFRESH_ICON_PATH"
+				label="%ACTION_REFRESH"
+				class="com.ibm.microclimate.ui.internal.actions.RefreshAction"/>
+			<action
+				id="com.ibm.microclimate.ui.removeConnection"
+				enablesFor="1"
+				menubarPath="group.additions"
+				label="%ACTION_CONNECTION_REMOVE_CONNECTION"
+				class="com.ibm.microclimate.ui.internal.actions.RemoveConnectionAction"/>
+		</objectContribution>
+	</extension>
+
+	<extension point="org.eclipse.ui.viewActions">
+		<viewContribution
+			id="com.ibm.microclimate.ui.explorerViewActions"
+			targetID="com.ibm.microclimate.ui.explorerView">
+			<action
+				id="com.ibm.microcliamte.ui.createConnectionAction"
+				label="%NEW_CONNECTION_MENU_LABEL"
+				menubarPath="group.new"
+				toolbarPath="group.new" 
+				icon="%DEFAULT_ICON_PATH"
+				class="com.ibm.microclimate.ui.internal.actions.CreateConnectionAction">
+			</action>
+			<action
+				id="com.ibm.microcliamte.ui.restartRunModeAction"
+				label="%ACTION_RESTART_RUN_MODE"
+				menubarPath="group.top"
+				toolbarPath="group.top" 
+				icon="%RUN_ICON_PATH"
+				class="com.ibm.microclimate.ui.internal.actions.RestartRunModeAction">
+			</action>
+			<action
+				id="com.ibm.microcliamte.ui.restartDebugModeAction"
+				label="%ACTION_RESTART_DEBUG_MODE"
+				menubarPath="group.top"
+				toolbarPath="group.top" 
+				icon="%DEBUG_ICON_PATH"
+				class="com.ibm.microclimate.ui.internal.actions.RestartDebugModeAction">
+			</action>
+		</viewContribution>
+	</extension>
+
+	<extension point="org.eclipse.ui.newWizards">
+		<category
+			id = "com.ibm.microclimate.ui.new"
+			name="%MICROCLIMATE_CATEGORY_NAME">
+		</category>
+		<wizard
+			id="com.ibm.microcliamte.ui.wizards.newConnection"
+			name="%NEW_CONNECTION_MENU_LABEL"
+			class="com.ibm.microclimate.ui.internal.wizards.NewMicroclimateConnectionWizard"
+			category="com.ibm.microclimate.ui.new"
+			icon="%DEFAULT_ICON_PATH">
+			<description>%NEW_CONNECTION_DESCRIPTION</description>
+			<selection class="org.eclipse.core.resources.IResource"/>
+		</wizard>
+	</extension>
+	
+	<extension point="org.eclipse.ui.ide.markerResolution">
+		<markerResolutionGenerator
+			markerType="com.ibm.microclimate.core.validationMarker"
+			class="com.ibm.microclimate.ui.internal.marker.MicroclimateMarkerResolutionGenerator"/>
+	</extension>
+	
+	<extension point="org.eclipse.ui.console.consolePageParticipants">
+      <consolePageParticipant
+      		id="com.ibm.microclimate.ui.socketConsolePageParticipant"
+            class="com.ibm.microclimate.ui.internal.console.SocketConsolePageParticipant">
+         <enablement>
+            <instanceof value="com.ibm.microclimate.core.internal.console.SocketConsole"/>
+         </enablement>
+      </consolePageParticipant>
+   </extension>
+
+</plugin>
