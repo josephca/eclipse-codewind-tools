@@ -1,27 +1,12 @@
 #!groovy​
 
 pipeline {
-	//agent any
-	agent {
-        docker { image 'node:12-alpine' }
-    }
-    
+	agent any
+	
     options {
         skipStagesAfterUnstable()
     }
     
-	environment {
-	
-		//registry = "josephca/eclipse-codewind-tools"
-    	//registryCredential = ‘dockerhub’
-    
-        CODEWIND_DOCKER_CREDS = credentials('codewind-docker-creds')
-        //CODEWIND_DOCKER_USR
-        //CODEWIND_DOCKER_PWD
-        CODEWIND_IMAGE_NAME = 'eclipse-codewind-tools'
-        CODEWIND_TAG = 'latest'
-    }
-	
 	stages {
 		stage('Build') {
 			steps {
@@ -29,7 +14,6 @@ pipeline {
 					sh 'echo "Starting gradle build for Eclipse codewind tools..."'
 				
 					if (isUnix()) {
-					//	sh 'node --version'
 		        		dir('dev') { sh './gradlew' }
 		    		} 
 		    		else {
